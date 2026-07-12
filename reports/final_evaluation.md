@@ -48,22 +48,56 @@ Short Term Capital Gains tax vs. IRA Withdrawal Tax w/o Quarterly Est.| I'm not 
 
 | Stage | Wins |
 |---|---|
-| Base model | /10 |
-| SFT model | /10 |
-| DPO model | /10 |
+| Base model | 0/10 |
+| SFT model |8 /10 |
+| DPO model | 0/10 |
 
 ## Key Findings
-
 **What improved from Base → SFT:**
-- 
+- Repetition loop eliminated — base model repeated sentences 8-10 times, 
+  SFT generates coherent non-repetitive responses
+- Question echoing eliminated — base model echoed questions on Q2, Q4, Q6
+- Domain reasoning improved — SFT attempts finance-specific explanations 
+  using terms like capital gains, wash sale, currency risk, IRS penalty
+- Hallucination reduced — base model hallucinated DHA property as 
+  high-rise building; SFT gave realistic property value analysis
+- BERTScore improved from 0.804 → 0.828 confirming semantic quality gain
 
 **What improved from SFT → DPO:**
-- 
+- Marginal tone improvement on some questions
+- Slightly more concise responses in Q7, Q10
 
 **Where DPO did NOT clearly improve over SFT:**
+- ROUGE-2 actually dropped slightly (0.042 → 0.038)
+- BERTScore remained identical (0.828)
+- No measurable improvement on factual accuracy
+- Q4 and Q9 both models still failed after DPO
 - 
 
 ## Honest Assessment
 
-<!-- Be specific. If DPO only marginally improved tone but not factual accuracy, say so. 
-     Graders respect honest evaluation over manufactured results. -->
+DPO alignment did not produce measurable improvement over SFT 
+in this experiment. Automatic metrics (ROUGE, BERTScore) show 
+identical scores for Stage 2 and Stage 3.
+
+Three likely reasons:
+
+1. Weak preference signal — rejected responses were truncated 
+   versions of chosen responses. The contrast was too subtle 
+   for DPO to learn a strong preference direction.
+
+2. Small preference dataset — only 50 pairs were used. DPO 
+   typically requires 500-1000 high quality human-annotated 
+   preference pairs to show measurable gains.
+
+3. Small model size — Llama-3.2-1B has limited capacity. 
+   DPO alignment shows stronger results on 7B+ models.
+
+The most significant improvement in this project came from 
+Base → SFT transition, where repetition loops and question 
+echoing were eliminated and domain reasoning improved 
+measurably across 8/10 test questions.
+
+Future improvement: Use base model outputs as rejected responses 
+instead of truncated ground truth — this would create a stronger 
+preference signal and likely show clearer DPO gains.
