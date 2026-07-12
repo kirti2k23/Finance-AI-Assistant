@@ -4,7 +4,7 @@
 
 ## Why full fine-tuning is expensive
 
-Full fine-tuning updates every weight in the model. Llama-3.2-1B has 1 billion parameters. 
+Full fine-tuning updates every weights in the model. Llama-3.2-1B has 1 billion parameters. 
 Training all of them requires:
 - Storing gradients for every parameter (doubles memory)
 - Full optimizer states (Adam uses 2x more memory than gradients)
@@ -13,59 +13,47 @@ Training all of them requires:
 For a 1B model in float32: ~4GB just for weights, ~8GB for gradients, ~16GB for optimizer state = 28GB+ minimum. Not feasible on free Colab T4 (15GB VRAM).
 
 ## What LoRA does
-
-<!-- Explain in your own words:
+LoRA is low rank adapter, which do following things:
      - Freezes original weights
      - Adds small trainable matrices A and B (rank r decomposition)
      - Only trains A and B — much smaller parameter count
      - At inference, merges LoRA weights back into original model
--->
+
 
 ## What QLoRA does
-
-<!-- Explain in your own words:
-     - Builds on LoRA
+QLoRA is quantized LoRA, which is build on top LoRA to use less memory.
      - Quantizes the base model to 4-bit (NF4 format)
      - Keeps LoRA adapters in float16
      - Double quantization to reduce memory further
      - Result: fine-tune a 7B model on a 24GB GPU
--->
+
 
 ## Why QLoRA is useful on limited GPU
-
-<!-- Explain in context of Kaggle T4 (15GB VRAM):
      - Without QLoRA: couldn't fit Llama-3.2-1B training in 15GB
      - With QLoRA: model weights use ~0.7GB (4-bit), adapter training ~2GB
      - Total: easily within T4 limits
--->
+
 
 ## What is non-instruction fine-tuning?
-
-<!-- Explain:
      - Also called continued pre-training or domain-adaptive pre-training
      - Feed raw domain text to the model (no Q&A format)
      - Model learns to predict next token in finance domain language
      - Does NOT teach it to answer questions — just teaches domain vocabulary
--->
+
 
 ## What is instruction fine-tuning (SFT)?
-
-<!-- Explain:
      - Supervised Fine-Tuning on instruction-response pairs
      - Teaches the model the format: given a question, produce a helpful answer
      - Uses labeled data: (instruction, response) pairs
-     - Result: model that follows instructions in the domain
--->
+
 
 ## What is DPO?
-
-<!-- Explain:
      - Direct Preference Optimization
      - Uses (prompt, chosen, rejected) triples
      - Teaches model to prefer chosen over rejected responses
      - Does NOT require a reward model (unlike RLHF)
      - Loss function directly optimizes the policy using preference data
--->
+
 
 ## Difference between SFT and DPO
 
